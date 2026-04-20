@@ -40,8 +40,43 @@
             <el-form-item :label="$t('m.Contest_Rule_Type')">
               <el-radio class="radio" v-model="contest.rule_type" label="ACM" :disabled="disableRuleType">ACM</el-radio>
               <el-radio class="radio" v-model="contest.rule_type" label="OI" :disabled="disableRuleType">OI</el-radio>
+              <el-radio class="radio" v-model="contest.rule_type" label="CUSTOM" :disabled="disableRuleType">CUSTOM</el-radio>
             </el-form-item>
           </el-col>
+          <template v-if="contest.rule_type === 'CUSTOM'">
+            <el-col :span="24">
+              <el-divider content-position="left">Custom Scoring Settings</el-divider>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Penalty per wrong submission">
+                <el-input-number v-model="contest.penalty_per_wrong_sub" :min="0"></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Minimum points floor">
+                <el-input-number v-model="contest.min_points" :min="0"></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Decay Type">
+                <el-select v-model="contest.decay_type" placeholder="Select Decay Type">
+                  <el-option label="None" value="none"></el-option>
+                  <el-option label="Linear" value="linear"></el-option>
+                  <el-option label="Step-based" value="step"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" v-if="contest.decay_type === 'linear'">
+              <el-form-item label="Decay Rate (per minute)">
+                <el-input-number v-model="contest.decay_rate" :min="0" :step="0.1"></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" v-if="contest.decay_type === 'step'">
+              <el-form-item label="Decay Steps (JSON)">
+                <el-input type="textarea" :rows="4" v-model="decayStepsJSON" placeholder='[{"after_minutes": 10, "points": 800}]'></el-input>
+              </el-form-item>
+            </el-col>
+          </template>
           <el-col :span="8">
             <el-form-item :label="$t('m.Real_Time_Rank')">
               <el-switch
@@ -106,7 +141,25 @@
           visible: true,
           allowed_ip_ranges: [{
             value: ''
-          }]
+          }],
+          decay_type: 'none',
+          decay_rate: 0,
+          decay_steps: [],
+          min_points: 0,
+          penalty_per_wrong_sub: 0
+        }
+      }
+    },
+    computed: {
+      decayStepsJSON: {
+        get () {
+          return JSON.stringify(this.contest.decay_steps)
+        },
+        set (value) {
+          try {
+            this.contest.decay_steps = JSON.parse(value)
+          } catch (e) {
+          }
         }
       }
     },

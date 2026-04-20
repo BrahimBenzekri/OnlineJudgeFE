@@ -7,6 +7,14 @@
           prefix-icon="el-icon-search"
           placeholder="Keywords">
         </el-input>
+        <template v-if="contestId">
+          <el-button type="warning" size="small" style="margin-left: 10px;"
+                     @click="handleWaveStart" icon="el-icon-timer">Start Wave Now
+          </el-button>
+          <span v-if="wave_start_time" style="margin-left: 10px; font-size: 13px;">
+            Current Wave Started: {{ wave_start_time | localtime }}
+          </span>
+        </template>
       </div>
       <el-table
         v-loading="loading"
@@ -61,7 +69,7 @@
             <el-switch v-model="scope.row.visible"
                        active-text=""
                        inactive-text=""
-                       @change="updateProblem(scope.row)">
+                       @change="handleVisibilityChange(scope.row)">
             </el-switch>
           </template>
         </el-table-column>
@@ -145,15 +153,47 @@
         currentRow: {},
         InlineEditDialogVisible: false,
         makePublicDialogVisible: false,
-        addProblemDialogVisible: false
+        addProblemDialogVisible: false,
+        wave_start_time: null
       }
     },
     mounted () {
       this.routeName = this.$route.name
       this.contestId = this.$route.params.contestId
       this.getProblemList(this.currentPage)
+      if (this.contestId) {
+        this.getContest()
+      }
     },
     methods: {
+      getContest () {
+        api.getContest(this.contestId).then(res => {
+          this.wave_start_time = res.data.data.wave_start_time
+        })
+      },
+      handleWaveStart () {
+        this.$confirm('This will reset the decay timer. Are you sure?', 'Reset Wave Timer', {
+          type: 'warning'
+        }).then(() => {
+          api.setWaveStartTime({contest_id: this.contestId}).then(() => {
+            this.getContest()
+          })
+        }).catch(() => {})
+      },
+      handleVisibilityChange (row) {
+        if (this.contestId) {
+          api.updateContestProblemVisibility({
+            id: row.id,
+            visible: row.visible
+          }).then(res => {
+            this.$success('Visibility updated')
+          }).catch(() => {
+            row.visible = !row.visible
+          })
+        } else {
+          this.updateProblem(row)
+        }
+      },
       handleDblclick (row) {
         row.isEditing = true
       },

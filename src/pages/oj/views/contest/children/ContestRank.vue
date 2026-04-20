@@ -9,6 +9,7 @@
   import { types } from '../../../../../store'
   import ACMContestRank from './ACMContestRank.vue'
   import OIContestRank from './OIContestRank.vue'
+  import CustomContestRank from './CustomContestRank.vue'
 
   const NullComponent = {
     name: 'null-component',
@@ -20,6 +21,7 @@
     components: {
       ACMContestRank,
       OIContestRank,
+      CustomContestRank,
       NullComponent
     },
     computed: {
@@ -28,7 +30,13 @@
         if (this.contestRuleType === null) {
           return 'NullComponent'
         }
-        return this.contestRuleType === 'ACM' ? 'ACMContestRank' : 'OIContestRank'
+        if (this.contestRuleType === 'ACM') {
+          return 'ACMContestRank'
+        } else if (this.contestRuleType === 'OI') {
+          return 'OIContestRank'
+        } else {
+          return 'CustomContestRank'
+        }
       }
     },
     beforeRouteLeave (to, from, next) {

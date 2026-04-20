@@ -10,7 +10,7 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
   // 登录
-  login (username, password) {
+  login(username, password) {
     return ajax('login', 'post', {
       data: {
         username,
@@ -18,14 +18,14 @@ export default {
       }
     })
   },
-  logout () {
+  logout() {
     return ajax('logout', 'get')
   },
-  getProfile () {
+  getProfile() {
     return ajax('profile', 'get')
   },
   // 获取公告列表
-  getAnnouncementList (offset, limit) {
+  getAnnouncementList(offset, limit) {
     return ajax('admin/announcement', 'get', {
       params: {
         paging: true,
@@ -35,7 +35,7 @@ export default {
     })
   },
   // 删除公告
-  deleteAnnouncement (id) {
+  deleteAnnouncement(id) {
     return ajax('admin/announcement', 'delete', {
       params: {
         id
@@ -43,20 +43,20 @@ export default {
     })
   },
   // 修改公告
-  updateAnnouncement (data) {
+  updateAnnouncement(data) {
     return ajax('admin/announcement', 'put', {
       data
     })
   },
   // 添加公告
-  createAnnouncement (data) {
+  createAnnouncement(data) {
     return ajax('admin/announcement', 'post', {
       data
     })
   },
   // 获取用户列表
-  getUserList (offset, limit, keyword) {
-    let params = {paging: true, offset, limit}
+  getUserList(offset, limit, keyword) {
+    let params = { paging: true, offset, limit }
     if (keyword) {
       params.keyword = keyword
     }
@@ -65,7 +65,7 @@ export default {
     })
   },
   // 获取单个用户信息
-  getUser (id) {
+  getUser(id) {
     return ajax('admin/user', 'get', {
       params: {
         id
@@ -73,105 +73,105 @@ export default {
     })
   },
   // 编辑用户
-  editUser (data) {
+  editUser(data) {
     return ajax('admin/user', 'put', {
       data
     })
   },
-  deleteUsers (id) {
+  deleteUsers(id) {
     return ajax('admin/user', 'delete', {
       params: {
         id
       }
     })
   },
-  importUsers (users) {
+  importUsers(users) {
     return ajax('admin/user', 'post', {
       data: {
         users
       }
     })
   },
-  generateUser (data) {
+  generateUser(data) {
     return ajax('admin/generate_user', 'post', {
       data
     })
   },
-  getLanguages () {
+  getLanguages() {
     return ajax('languages', 'get')
   },
-  getSMTPConfig () {
+  getSMTPConfig() {
     return ajax('admin/smtp', 'get')
   },
-  createSMTPConfig (data) {
+  createSMTPConfig(data) {
     return ajax('admin/smtp', 'post', {
       data
     })
   },
-  editSMTPConfig (data) {
+  editSMTPConfig(data) {
     return ajax('admin/smtp', 'put', {
       data
     })
   },
-  testSMTPConfig (email) {
+  testSMTPConfig(email) {
     return ajax('admin/smtp_test', 'post', {
       data: {
         email
       }
     })
   },
-  getWebsiteConfig () {
+  getWebsiteConfig() {
     return ajax('admin/website', 'get')
   },
-  editWebsiteConfig (data) {
+  editWebsiteConfig(data) {
     return ajax('admin/website', 'post', {
       data
     })
   },
-  getJudgeServer () {
+  getJudgeServer() {
     return ajax('admin/judge_server', 'get')
   },
-  deleteJudgeServer (hostname) {
+  deleteJudgeServer(hostname) {
     return ajax('admin/judge_server', 'delete', {
       params: {
         hostname: hostname
       }
     })
   },
-  updateJudgeServer (data) {
+  updateJudgeServer(data) {
     return ajax('admin/judge_server', 'put', {
       data
     })
   },
-  getInvalidTestCaseList () {
+  getInvalidTestCaseList() {
     return ajax('admin/prune_test_case', 'get')
   },
-  pruneTestCase (id) {
+  pruneTestCase(id) {
     return ajax('admin/prune_test_case', 'delete', {
       params: {
         id
       }
     })
   },
-  createContest (data) {
+  createContest(data) {
     return ajax('admin/contest', 'post', {
       data
     })
   },
-  getContest (id) {
+  getContest(id) {
     return ajax('admin/contest', 'get', {
       params: {
         id
       }
     })
   },
-  editContest (data) {
+  editContest(data) {
     return ajax('admin/contest', 'put', {
       data
     })
   },
-  getContestList (offset, limit, keyword) {
-    let params = {paging: true, offset, limit}
+  getContestList(offset, limit, keyword) {
+    let params = { paging: true, offset, limit }
     if (keyword) {
       params.keyword = keyword
     }
@@ -179,120 +179,130 @@ export default {
       params: params
     })
   },
-  getContestAnnouncementList (contestID) {
+  getContestAnnouncementList(contestID) {
     return ajax('admin/contest/announcement', 'get', {
       params: {
         contest_id: contestID
       }
     })
   },
-  createContestAnnouncement (data) {
+  createContestAnnouncement(data) {
     return ajax('admin/contest/announcement', 'post', {
       data
     })
   },
-  deleteContestAnnouncement (id) {
+  deleteContestAnnouncement(id) {
     return ajax('admin/contest/announcement', 'delete', {
       params: {
         id
       }
     })
   },
-  updateContestAnnouncement (data) {
+  updateContestAnnouncement(data) {
     return ajax('admin/contest/announcement', 'put', {
       data
     })
   },
-  getProblemTagList (params) {
+  getProblemTagList(params) {
     return ajax('problem/tags', 'get', {
       params
     })
   },
-  compileSPJ (data) {
+  compileSPJ(data) {
     return ajax('admin/compile_spj', 'post', {
       data
     })
   },
-  createProblem (data) {
+  createProblem(data) {
     return ajax('admin/problem', 'post', {
       data
     })
   },
-  editProblem (data) {
+  editProblem(data) {
     return ajax('admin/problem', 'put', {
       data
     })
   },
-  deleteProblem (id) {
+  deleteProblem(id) {
     return ajax('admin/problem', 'delete', {
       params: {
         id
       }
     })
   },
-  getProblem (id) {
+  getProblem(id) {
     return ajax('admin/problem', 'get', {
       params: {
         id
       }
     })
   },
-  getProblemList (params) {
+  getProblemList(params) {
     params = utils.filterEmptyValue(params)
     return ajax('admin/problem', 'get', {
       params
     })
   },
-  getContestProblemList (params) {
+  getContestProblemList(params) {
     params = utils.filterEmptyValue(params)
     return ajax('admin/contest/problem', 'get', {
       params
     })
   },
-  getContestProblem (id) {
+  getContestProblem(id) {
     return ajax('admin/contest/problem', 'get', {
       params: {
         id
       }
     })
   },
-  createContestProblem (data) {
+  createContestProblem(data) {
     return ajax('admin/contest/problem', 'post', {
       data
     })
   },
-  editContestProblem (data) {
+  editContestProblem(data) {
     return ajax('admin/contest/problem', 'put', {
       data
     })
   },
-  deleteContestProblem (id) {
+  deleteContestProblem(id) {
     return ajax('admin/contest/problem', 'delete', {
       params: {
         id
       }
     })
   },
-  makeContestProblemPublic (data) {
+  makeContestProblemPublic(data) {
     return ajax('admin/contest_problem/make_public', 'post', {
       data
     })
   },
-  addProblemFromPublic (data) {
+  addProblemFromPublic(data) {
     return ajax('admin/contest/add_problem_from_public', 'post', {
       data
     })
   },
-  getReleaseNotes () {
+  setWaveStartTime(data) {
+    return ajax('admin/contest/wave_start', 'put', {
+      data
+    })
+  },
+  updateContestProblemVisibility(data) {
+    return ajax('admin/contest/problem/visibility', 'put', {
+      data
+    })
+  },
+  getReleaseNotes() {
     return ajax('admin/versions', 'get')
   },
-  getDashboardInfo () {
+  getDashboardInfo() {
     return ajax('admin/dashboard_info', 'get')
   },
-  getSessions () {
+  getSessions() {
     return ajax('sessions', 'get')
   },
-  exportProblems (data) {
+  exportProblems(data) {
     return ajax('export_problem', 'post', {
       data
     })
@@ -306,9 +316,9 @@ export default {
  * @param data post data, use for method put|post
  * @returns {Promise}
  */
-function ajax (url, method, options) {
+function ajax(url, method, options) {
   if (options !== undefined) {
-    var {params = {}, data = {}} = options
+    var { params = {}, data = {} } = options
   } else {
     params = data = {}
   }
@@ -325,7 +335,7 @@ function ajax (url, method, options) {
         reject(res)
         // // 若后端返回为登录，则为session失效，应退出当前登录用户
         if (res.data.data.startsWith('Please login')) {
-          router.push({name: 'login'})
+          router.push({ name: 'login' })
         }
       } else {
         resolve(res)

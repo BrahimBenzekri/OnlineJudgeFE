@@ -10,7 +10,13 @@ const state = {
   forceUpdate: false,
   contest: {
     created_by: {},
-    contest_type: CONTEST_TYPE.PUBLIC
+    contest_type: CONTEST_TYPE.PUBLIC,
+    decay_type: '',
+    decay_rate: 0,
+    decay_steps: [],
+    min_points: 0,
+    penalty_per_wrong_sub: 0,
+    wave_start_time: null
   },
   contestProblems: [],
   itemVisible: {
@@ -96,26 +102,34 @@ const getters = {
 }
 
 const mutations = {
-  [types.CHANGE_CONTEST] (state, payload) {
+  [types.CHANGE_CONTEST](state, payload) {
     state.contest = payload.contest
   },
-  [types.CHANGE_CONTEST_ITEM_VISIBLE] (state, payload) {
-    state.itemVisible = {...state.itemVisible, ...payload}
+  [types.CHANGE_CONTEST_ITEM_VISIBLE](state, payload) {
+    state.itemVisible = { ...state.itemVisible, ...payload }
   },
-  [types.CHANGE_RANK_FORCE_UPDATE] (state, payload) {
+  [types.CHANGE_RANK_FORCE_UPDATE](state, payload) {
     state.forceUpdate = payload.value
   },
-  [types.CHANGE_CONTEST_PROBLEMS] (state, payload) {
+  [types.CHANGE_CONTEST_PROBLEMS](state, payload) {
     state.contestProblems = payload.contestProblems
   },
-  [types.CHANGE_CONTEST_RANK_LIMIT] (state, payload) {
+  [types.CHANGE_CONTEST_RANK_LIMIT](state, payload) {
     state.rankLimit = payload.rankLimit
   },
-  [types.CONTEST_ACCESS] (state, payload) {
+  [types.CONTEST_ACCESS](state, payload) {
     state.access = payload.access
   },
-  [types.CLEAR_CONTEST] (state) {
-    state.contest = {created_by: {}}
+  [types.CLEAR_CONTEST](state) {
+    state.contest = {
+      created_by: {},
+      decay_type: '',
+      decay_rate: 0,
+      decay_steps: [],
+      min_points: 0,
+      penalty_per_wrong_sub: 0,
+      wave_start_time: null
+    }
     state.contestProblems = []
     state.access = false
     state.itemVisible = {
@@ -125,22 +139,22 @@ const mutations = {
     }
     state.forceUpdate = false
   },
-  [types.NOW] (state, payload) {
+  [types.NOW](state, payload) {
     state.now = payload.now
   },
-  [types.NOW_ADD_1S] (state) {
+  [types.NOW_ADD_1S](state) {
     state.now = moment(state.now.add(1, 's'))
   }
 }
 
 const actions = {
-  getContest ({commit, rootState, dispatch}) {
+  getContest({ commit, rootState, dispatch }) {
     return new Promise((resolve, reject) => {
       api.getContest(rootState.route.params.contestID).then((res) => {
         resolve(res)
         let contest = res.data.data
-        commit(types.CHANGE_CONTEST, {contest: contest})
-        commit(types.NOW, {now: moment(contest.now)})
+        commit(types.CHANGE_CONTEST, { contest: contest })
+        commit(types.NOW, { now: moment(contest.now) })
         if (contest.contest_type === CONTEST_TYPE.PRIVATE) {
           dispatch('getContestAccess')
         }
@@ -149,7 +163,7 @@ const actions = {
       })
     })
   },
-  getContestProblems ({commit, rootState}) {
+  getContestProblems({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       api.getContestProblemList(rootState.route.params.contestID).then(res => {
         res.data.data.sort((a, b) => {
@@ -160,17 +174,17 @@ const actions = {
           }
           return -1
         })
-        commit(types.CHANGE_CONTEST_PROBLEMS, {contestProblems: res.data.data})
+        commit(types.CHANGE_CONTEST_PROBLEMS, { contestProblems: res.data.data })
         resolve(res)
       }, () => {
-        commit(types.CHANGE_CONTEST_PROBLEMS, {contestProblems: []})
+        commit(types.CHANGE_CONTEST_PROBLEMS, { contestProblems: [] })
       })
     })
   },
-  getContestAccess ({commit, rootState}) {
+  getContestAccess({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       api.getContestAccess(rootState.route.params.contestID).then(res => {
-        commit(types.CONTEST_ACCESS, {access: res.data.data.access})
+        commit(types.CONTEST_ACCESS, { access: res.data.data.access })
         resolve(res)
       }).catch()
     })

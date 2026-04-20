@@ -7,9 +7,14 @@
              :data="problems"
              @on-row-click="goContestProblem"
              :no-data-text="$t('m.No_Problems')"></Table>
-      <Table v-else
+      <Table v-else-if="contestRuleType == 'OI'"
              :data="problems"
              :columns="OITableColumns"
+             @on-row-click="goContestProblem"
+             no-data-text="$t('m.No_Problems')"></Table>
+      <Table v-else
+             :data="problems"
+             :columns="CustomTableColumns"
              @on-row-click="goContestProblem"
              no-data-text="$t('m.No_Problems')"></Table>
     </Panel>
@@ -57,11 +62,41 @@
             title: this.$i18n.t('m.Title'),
             key: 'title'
           }
+        ],
+        CustomTableColumns: [
+          {
+            title: '#',
+            key: '_id',
+            width: 150
+          },
+          {
+            title: this.$i18n.t('m.Title'),
+            key: 'title'
+          },
+          {
+            title: 'Current Points',
+            render: (h, params) => {
+              return h('span', {
+                style: {
+                  color: '#2d8cf0',
+                  fontWeight: 'bold'
+                }
+              }, params.row.current_points || params.row.base_points || '—')
+            }
+          }
         ]
       }
     },
     mounted () {
       this.getContestProblems()
+      if (this.contestRuleType === 'CUSTOM') {
+        this.refreshTimer = setInterval(() => {
+          this.getContestProblems()
+        }, 60000)
+      }
+    },
+    beforeDestroy () {
+      clearInterval(this.refreshTimer)
     },
     methods: {
       getContestProblems () {
